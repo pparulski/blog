@@ -53,6 +53,55 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
+## Decap CMS (Git-backed admin)
+
+This repo is configured to use **Decap CMS** so you can edit blog posts with a friendly UI and commit changes back to GitHub.
+
+- Admin UI: `https://<your-site>/admin/`
+- Blog content folder: `src/content/blog/`
+- Uploaded images:
+  - stored in: `public/uploads/`
+  - referenced in content as: `/uploads/<filename>`
+
+### Using the editor
+1. Deploy the site.
+2. Open `/admin/`.
+3. Log in (requires GitHub OAuth; see below).
+4. Create/edit posts. Decap will commit Markdown files to `src/content/blog/`.
+
+### Authentication (GitHub)
+Decap's `github` backend requires an OAuth "auth server" that performs the GitHub OAuth flow.
+
+You have two realistic options:
+
+#### Option A (fastest): use a hosted OAuth proxy
+Use any hosted Decap/Netlify CMS OAuth proxy service and set `backend.base_url` + `backend.auth_endpoint` accordingly.
+
+Pros: fastest to get running.
+Cons: relies on a third-party auth service.
+
+#### Option B (recommended with Cloudflare Workers): host your own OAuth proxy
+Host a tiny OAuth proxy (a separate Cloudflare Worker) that implements the GitHub OAuth flow, then point Decap to it.
+
+At a high level:
+1. Create a **GitHub OAuth App** (GitHub → Settings → Developer settings → OAuth Apps).
+   - Authorization callback URL: `https://<your-auth-worker-domain>/callback`
+2. Deploy an auth Worker that exposes endpoints like:
+   - `/auth` (starts OAuth)
+   - `/callback` (handles GitHub callback)
+3. Update `public/admin/config.yml` to include:
+
+```yaml
+backend:
+  name: github
+  repo: pparulski/blog
+  branch: main
+  base_url: https://<your-auth-worker-domain>
+  auth_endpoint: auth
+```
+
+If you want, I can implement the Cloudflare Worker OAuth proxy in this repo (or as a separate worker project) and tell you exactly which GitHub OAuth settings and secrets to set.
+
 ## 👀 Want to learn more?
 
 Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
