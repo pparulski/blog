@@ -3,7 +3,7 @@ backend:
   repo: pparulski/blog
   branch: main
   base_url: https://cms.parul.ski
-  auth_endpoint: auth_endpoint
+  auth_endpoint: auth
 
 site_url: https://parul.ski
 
