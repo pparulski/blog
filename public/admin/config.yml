@@ -2,6 +2,10 @@ backend:
   name: github
   repo: pparulski/blog
   branch: main
+  base_url: https://cms.parul.ski
+  auth_endpoint: auth_endpoint
+
+site_url: https://parul.ski
 
 # This is the public URL where your site is hosted (used for previews/media URLs).
 # You can change it later; Decap still works without it.
