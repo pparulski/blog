@@ -7,10 +7,6 @@ backend:
 
 site_url: https://parul.ski
 
-# This is the public URL where your site is hosted (used for previews/media URLs).
-# You can change it later; Decap still works without it.
-# site_url: https://<your-domain>
-
 media_folder: "public/uploads"
 public_folder: "/uploads"
 
