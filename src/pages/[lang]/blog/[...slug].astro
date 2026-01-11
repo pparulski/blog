@@ -1,0 +1,44 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import BlogPost from '../../../layouts/BlogPost.astro';
+
+type Lang = 'en' | 'pl';
+
+type Props = CollectionEntry<'blog'>;
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	const toLangSlug = (slug: string, lang: Lang) => slug.replace(`${lang}/`, '');
+
+	return posts.map((post) => {
+		const lang = post.data.lang as Lang;
+		const slug = toLangSlug(post.slug, lang);
+		return {
+			params: { lang, slug },
+			props: post,
+		};
+	});
+}
+
+const post = Astro.props as Props;
+const { lang, slug } = Astro.params as { lang: Lang; slug: string };
+
+const toLangSlug = (s: string) => s.replace(`${lang}/`, '');
+
+if (post.data.lang !== lang) {
+	const correctLang = post.data.lang as Lang;
+	const correctSlug = post.slug.replace(`${correctLang}/`, '');
+	return Astro.redirect(`/${correctLang}/blog/${correctSlug}/`, 302);
+}
+
+const expectedSlug = toLangSlug(post.slug);
+if (expectedSlug !== slug) {
+	return Astro.redirect(`/${lang}/blog/${expectedSlug}/`, 302);
+}
+
+const { Content } = await render(post);
+---
+
+<BlogPost {...post.data}>
+	<Content />
+</BlogPost>

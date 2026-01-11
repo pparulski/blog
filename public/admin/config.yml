@@ -11,15 +11,35 @@ media_folder: "public/uploads"
 public_folder: "/uploads"
 
 collections:
-  - name: "blog"
-    label: "Blog"
-    folder: "src/content/blog"
+  - name: "blog_en"
+    label: "Blog (EN)"
+    folder: "src/content/blog/en"
     create: true
     format: "frontmatter"
     extension: "md"
     slug: "{{slug}}"
-    preview_path: "blog/{{slug}}"
+    preview_path: "en/blog/{{slug}}"
     fields:
+      - { label: "Lang", name: "lang", widget: "hidden", default: "en" }
+      - { label: "Translation Key", name: "translationKey", widget: "string", required: false }
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Publish Date", name: "pubDate", widget: "datetime" }
+      - { label: "Updated Date", name: "updatedDate", widget: "datetime", required: false }
+      - { label: "Hero Image", name: "heroImage", widget: "image", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "blog_pl"
+    label: "Blog (PL)"
+    folder: "src/content/blog/pl"
+    create: true
+    format: "frontmatter"
+    extension: "md"
+    slug: "{{slug}}"
+    preview_path: "pl/blog/{{slug}}"
+    fields:
+      - { label: "Lang", name: "lang", widget: "hidden", default: "pl" }
+      - { label: "Translation Key", name: "translationKey", widget: "string", required: false }
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Description", name: "description", widget: "text" }
       - { label: "Publish Date", name: "pubDate", widget: "datetime" }

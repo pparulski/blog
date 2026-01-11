@@ -6,9 +6,15 @@ import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const enPosts = (await getCollection('blog', ({ data }) => data.lang === 'en'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 5);
+
+const plPosts = (await getCollection('blog', ({ data }) => data.lang === 'pl'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 5);
+
+const toLangSlug = (slug: string, lang: 'en' | 'pl') => slug.replace(`${lang}/`, '');
 ---
 
 <!doctype html>
@@ -19,29 +25,67 @@ const posts = (await getCollection('blog')).sort(
 	<body>
 		<Header />
 		<main>
-			<ul class="post-list">
-				{
-					posts.map((post) => (
-						<li class="post">
-							<a class="post-link" href={`/blog/${post.slug}/`}>
-								{post.data.heroImage && (
-									<img
-										class="post-thumb"
-										src={post.data.heroImage}
-										alt=""
-										loading="lazy"
-										decoding="async"
-									/>
-								)}
-								<div class="post-meta">
-									<div class="post-title">{post.data.title}</div>
-									<div class="post-date"><FormattedDate date={post.data.pubDate} /></div>
-								</div>
-							</a>
-						</li>
-					))
-				}
-			</ul>
+			<section class="home-grid">
+				<div class="home-col">
+					<h1 class="home-title"><a href="/en/">English</a></h1>
+					<ul class="post-list">
+						{
+							enPosts.map((post) => {
+								const slug = toLangSlug(post.slug, 'en');
+								return (
+									<li class="post">
+										<a class="post-link" href={`/en/blog/${slug}/`}>
+											{post.data.heroImage && (
+												<img
+													class="post-thumb"
+													src={post.data.heroImage}
+													alt=""
+													loading="lazy"
+													decoding="async"
+												/>
+											)}
+											<div class="post-meta">
+												<div class="post-title">{post.data.title}</div>
+												<div class="post-date"><FormattedDate date={post.data.pubDate} /></div>
+											</div>
+										</a>
+									</li>
+								);
+							})
+						}
+					</ul>
+				</div>
+
+				<div class="home-col">
+					<h1 class="home-title"><a href="/pl/">Polski</a></h1>
+					<ul class="post-list">
+						{
+							plPosts.map((post) => {
+								const slug = toLangSlug(post.slug, 'pl');
+								return (
+									<li class="post">
+										<a class="post-link" href={`/pl/blog/${slug}/`}>
+											{post.data.heroImage && (
+												<img
+													class="post-thumb"
+													src={post.data.heroImage}
+													alt=""
+													loading="lazy"
+													decoding="async"
+												/>
+											)}
+											<div class="post-meta">
+												<div class="post-title">{post.data.title}</div>
+												<div class="post-date"><FormattedDate date={post.data.pubDate} /></div>
+											</div>
+										</a>
+									</li>
+								);
+							})
+						}
+					</ul>
+				</div>
+			</section>
 		</main>
 		<Footer />
 	</body>

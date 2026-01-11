@@ -139,6 +139,28 @@ hr {
 	}
 }
 
+/* Home page */
+.home-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 2rem;
+	align-items: start;
+}
+.home-title {
+	font-size: 1.05rem;
+	font-weight: 400;
+	margin: 0 0 1rem;
+}
+.home-title a {
+	text-decoration: underline;
+}
+@media (max-width: 820px) {
+	.home-grid {
+		grid-template-columns: 1fr;
+		gap: 2.5rem;
+	}
+}
+
 /* Home page list */
 .post-list {
 	list-style: none;

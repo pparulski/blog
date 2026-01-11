@@ -3,6 +3,9 @@ const blog = defineCollection({
 	// Type-check frontmatter using a schema
 	schema: () =>
 		z.object({
+			lang: z.enum(['en', 'pl']),
+			// Use the same translationKey across languages to link translations.
+			translationKey: z.string().optional(),
 			title: z.string(),
 			description: z.string(),
 			// Transform string to Date object
