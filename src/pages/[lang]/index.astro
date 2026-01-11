@@ -43,7 +43,7 @@ const posts = (await getCollection('blog', ({ data }) => data.lang === lang)).so
 								)}
 								<div class="post-meta">
 									<div class="post-title">{post.data.title}</div>
-									<div class="post-date"><FormattedDate date={post.data.pubDate} /></div>
+									<div class="post-date"><FormattedDate date={post.data.pubDate} lang={lang} format="locale" /></div>
 								</div>
 							</a>
 						</li>

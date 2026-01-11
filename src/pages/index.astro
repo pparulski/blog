@@ -46,7 +46,9 @@ const toLangSlug = (slug: string, lang: 'en' | 'pl') => slug.replace(`${lang}/`,
 											)}
 											<div class="post-meta">
 												<div class="post-title">{post.data.title}</div>
-												<div class="post-date"><FormattedDate date={post.data.pubDate} /></div>
+												<div class="post-date">
+													<FormattedDate date={post.data.pubDate} lang="en" />
+												</div>
 											</div>
 										</a>
 									</li>
@@ -76,7 +78,9 @@ const toLangSlug = (slug: string, lang: 'en' | 'pl') => slug.replace(`${lang}/`,
 											)}
 											<div class="post-meta">
 												<div class="post-title">{post.data.title}</div>
-												<div class="post-date"><FormattedDate date={post.data.pubDate} /></div>
+												<div class="post-date">
+													<FormattedDate date={post.data.pubDate} lang="pl" />
+												</div>
 											</div>
 										</a>
 									</li>

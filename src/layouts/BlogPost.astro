@@ -4,14 +4,52 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 
-import type { CollectionEntry } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props as Props;
+const { title, description, pubDate, updatedDate, heroImage, lang, translationKey } = Astro.props as Props;
+
+const otherLang = lang === 'en' ? 'pl' : 'en';
+
+let translationUrl: string | null = null;
+if (translationKey) {
+	const siblings = await getCollection('blog', ({ data }) =>
+		data.translationKey === translationKey && data.lang === otherLang,
+	);
+	const sibling = siblings[0];
+	if (sibling) {
+		const siblingSlug = sibling.slug.replace(`${otherLang}/`, '');
+		translationUrl = `/${otherLang}/blog/${siblingSlug}/`;
+	}
+}
+
 ---
 
-<html lang="en">
+<html lang={lang}>
+		{translationUrl && (
+			<script is:inline>
+				(() => {
+					try {
+						const currentLang = "${lang}";
+						const otherUrl = "${translationUrl}";
+						const langs = (navigator.languages && navigator.languages.length
+							? navigator.languages
+							: [navigator.language]
+						).map((l) => (l || '').toLowerCase());
+						const prefersPl = langs.some((l) => l === 'pl' || l.startsWith('pl-'));
+						const preferredLang = prefersPl ? 'pl' : 'en';
+
+						if (preferredLang !== currentLang) {
+							// Avoid redirect loops if already at target.
+							if (!location.pathname.startsWith(`/${preferredLang}/`)) {
+								location.replace(otherUrl);
+							}
+						}
+					} catch {}
+				})();
+			</script>
+		)}
 	<head>
 		<BaseHead title={title} description={description} />
 		<style>
@@ -54,6 +92,39 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props as P
 				color: rgb(var(--gray));
 				font-size: 0.95rem;
 			}
+			.date-row {
+				display: flex;
+				align-items: baseline;
+				justify-content: space-between;
+				gap: 1rem;
+				flex-wrap: wrap;
+			}
+			.lang-toggle {
+				display: inline-flex;
+				gap: 0.5rem;
+				align-items: baseline;
+				margin-top: 0;
+				font-size: 0.85rem;
+				letter-spacing: 0.04em;
+				text-transform: uppercase;
+				color: rgb(var(--gray));
+			}
+			.lang-toggle a {
+				text-decoration: none;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+			}
+			.lang-toggle a:hover {
+				border-bottom-color: rgba(0, 0, 0, 0.5);
+			}
+			.lang-toggle .active {
+				color: rgb(var(--gray-dark));
+				border-bottom: 1px solid rgba(0, 0, 0, 0.65);
+			}
+			.lang-toggle .disabled {
+				opacity: 0.45;
+				border-bottom: 1px solid transparent;
+				cursor: not-allowed;
+			}
 			.last-updated-on {
 				font-style: italic;
 				opacity: 0.8;
@@ -73,11 +144,30 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props as P
 				<div class="prose">
 					<div class="title">
 						<div class="date">
-							<FormattedDate date={pubDate} />
+							<div class="date-row">
+								<FormattedDate date={pubDate} lang={lang} format="locale" />
+								<div class="lang-toggle" aria-label="Language">
+								{lang === 'en' ? (
+									<span class="active">EN</span>
+								) : translationUrl ? (
+									<a href={translationUrl}>EN</a>
+								) : (
+									<span class="disabled" aria-disabled="true" title="No English version yet">EN</span>
+								)}
+								<span aria-hidden="true">·</span>
+								{lang === 'pl' ? (
+									<span class="active">PL</span>
+								) : translationUrl ? (
+									<a href={translationUrl}>PL</a>
+								) : (
+									<span class="disabled" aria-disabled="true" title="Brak polskiej wersji">PL</span>
+								)}
+								</div>
+							</div>
 							{
 								updatedDate && (
 									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
+										Last updated on <FormattedDate date={updatedDate} lang={lang} format="locale" />
 									</div>
 								)
 							}

@@ -1,17 +1,24 @@
 ---
 interface Props {
 	date: Date;
+	// Optional language hint for locale-aware formatting.
+	lang?: 'en' | 'pl';
+	// Default is a language-neutral, highly readable format.
+	format?: 'iso' | 'locale';
 }
 
-const { date } = Astro.props;
+const { date, lang = 'en', format = 'iso' } = Astro.props;
+
+const iso = date.toISOString().slice(0, 10);
+
+const locale = lang === 'pl' ? 'pl-PL' : 'en-GB';
+const localeFormatted = date.toLocaleDateString(locale, {
+	year: 'numeric',
+	month: 'short',
+	day: '2-digit',
+});
+
+const display = format === 'locale' ? localeFormatted : iso;
 ---
 
-<time datetime={date.toISOString()}>
-	{
-		date.toLocaleDateString('en-us', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-		})
-	}
-</time>
+<time datetime={date.toISOString()}>{display}</time>
