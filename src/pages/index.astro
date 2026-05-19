@@ -25,9 +25,20 @@ const toLangSlug = (slug: string, lang: 'en' | 'pl') => slug.replace(`${lang}/`,
 	<body>
 		<Header />
 		<main>
+			<section class="intro">
+				<p class="intro-bio">
+					Hi! Cześć! Most of the days I spend as an analytics engineer at <a
+						href="https://text.com">Text</a
+					>. Sometimes I help others move the data. In my spare time I'm building the tech for a
+					<a href="https://mlodzi.ozzip.pl">student union</a>. Happy to connect via <a
+						href="mailto:piotr@parul.ski">email</a
+					> or <a href="https://linkedin.com/in/pparulski/">LinkedIn</a>!
+				</p>
+			</section>
 			<section class="home-grid">
 				<div class="home-col">
 					<h1 class="home-title"><a href="/en/">English</a></h1>
+					{enPosts.length === 0 && <p class="post-empty">Nothing to read for now!</p>}
 					<ul class="post-list">
 						{
 							enPosts.map((post) => {
@@ -60,6 +71,7 @@ const toLangSlug = (slug: string, lang: 'en' | 'pl') => slug.replace(`${lang}/`,
 
 				<div class="home-col">
 					<h1 class="home-title"><a href="/pl/">Polski</a></h1>
+					{plPosts.length === 0 && <p class="post-empty">Na razie nie ma czego czytać!</p>}
 					<ul class="post-list">
 						{
 							plPosts.map((post) => {

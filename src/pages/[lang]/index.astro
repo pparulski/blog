@@ -25,6 +25,11 @@ const posts = (await getCollection('blog', ({ data }) => data.lang === lang)).so
 	<body>
 		<Header />
 		<main>
+			{posts.length === 0 && (
+				<p class="post-empty">
+					{lang === 'pl' ? 'Na razie nie ma czego czytać!' : 'Nothing to read for now!'}
+				</p>
+			)}
 			<ul class="post-list">
 				{
 					posts.map((post) => {
